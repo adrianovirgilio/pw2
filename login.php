@@ -2,7 +2,15 @@
 	session_start();
 	$login = $_POST['login'];
 	$senha = $_POST['senha'];
-	if($login=='adriano' and $senha =='123')
+	$con = new PDO('mysql:host=localhost:3307;
+					dbname=banco_apm','root','usbw');
+	$cmd_sql ="SELECT * FROM tabela_usuarios WHERE
+					login = ? AND senha = ?";
+	$busca = $con->prepare($cmd_sql);
+	$busca->bindParam(1,$login);
+	$busca->bindParam(2,$senha);
+	$busca->execute();					
+	if($busca->rowCount()>0)
 	{
 		$_SESSION['login'] = $login;
 		$_SESSION['senha'] = $senha;
