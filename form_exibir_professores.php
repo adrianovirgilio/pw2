@@ -30,7 +30,7 @@ while($campo = $consulta->fetch(PDO::FETCH_ASSOC)){
 }catch(PDOException $e){
 		echo "Erro:" . $e->getMessage(); 
 	 }	
-	?><!-- Fechando um scrpy PHP -->
+	?><!-- Fechando um script PHP -->
     </table>
 </body>
 </html>
