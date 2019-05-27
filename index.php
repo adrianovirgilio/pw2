@@ -1,5 +1,5 @@
 ﻿<?php
- session_start();
+session_start();
 if((!isset($_SESSION['login']) == true)
     and (!isset ($_SESSION['senha']) == true))
  {
@@ -8,7 +8,6 @@ if((!isset($_SESSION['login']) == true)
   	header('location:index.html');
   }
 ?>
-
 <!doctype html>
 <html>
 <head>

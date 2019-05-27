@@ -1,41 +1,46 @@
-﻿<?php // Tag de abertura <?php, que diz ao PHP para iniciar a interpretação do código.
-
- if(isset($_GET['cadastrar'])){
-	 	 try{
-		$conexao = new PDO('mysql:host=localhost:3307;dbname=banco_apm','root','usbw');
-		$conexao->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-		$matricula = $_GET['matricula'];
-		$nome = $_GET['nome']; 
-		$email = $_GET['email'];
-		$telefone = $_GET['telefone'];
-		$celular = $_GET['celular'];
-		$valor = $_GET['valor'];
-		$data = $_GET['data'];
-		$comando_sql = "INSERT INTO tabela_professores(matricula,nome,email,telefone,celular,data,valor)VALUES(:parametro1,:parametro2,:parametro3,:parametro4,:parametro5,:parametro6,:parametro7);";
-		$stmt = $conexao->prepare($comando_sql);
-		$stmt->bindParam(':parametro1',$matricula);
-		$stmt->bindParam(':parametro2',$nome);
-		$stmt->bindParam(':parametro3',$email);
-		$stmt->bindParam(':parametro4',$telefone);
-		$stmt->bindParam(':parametro5',$celular);
-		$stmt->bindParam(':parametro6',$data);
-		$stmt->bindParam(':parametro7',$valor);		
-		$rs = $stmt->execute();		
-		if($rs){
-			echo "<script>alert('Dados gravados com sucesso!');</script>";	
-		}else{
-			
-			echo var_dump($stmt->errorInfo());	
-		}
-			
-		 } catch(PDOException $e) 
-		 	{			 
-			 	echo "Erro:" . $e->getMessage();
-			} 
- }
- 
+﻿<?php
+if(isset($_GET['cadastrar'])){
+ try{
+$conexao = new PDO('mysql:host=localhost:3307;
+						dbname=banco_apm','root','usbw');
+$conexao->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+$matricula = $_GET['matricula'];
+$nome = $_GET['nome']; 
+$email = $_GET['email'];
+$telefone = $_GET['telefone'];
+$celular = $_GET['celular'];
+$valor = $_GET['valor'];
+$data = $_GET['data'];
+// Recebendo dados do arquivo
+$arquivo = $_FILES['arquivo'];
+$nome = $_FILES['arquivo']['name'];
+$extensao = explode(".",$nome);
+$nome_final = md5(time()) . ".". $extensao[1];
+$pasta = "fotos/";
+$comando_sql = "INSERT INTO tabela_professores(matricula,nome,email,telefone,celular,data,valor,foto)
+VALUES(?,?,?,?,?,?,?,?);";
+$stmt = $conexao->prepare($comando_sql);
+$stmt->bindParam(1,$matricula);
+$stmt->bindParam(2,$nome);
+$stmt->bindParam(3,$email);
+$stmt->bindParam(4,$telefone);
+$stmt->bindParam(5,$celular);
+$stmt->bindParam(6,$data);
+$stmt->bindParam(7,$valor);	
+$stmt->bindParam(8,$nome_final);	
+$rs = $stmt->execute();		
+ if($rs and move_uploaded_file($arquivo['tmp_name'],$pasta.$nome_final))
+  {
+	echo "<script>alert('Dados gravados com sucesso!');</script>";	
+  }else{
+	echo var_dump($stmt->errorInfo());	
+  }
+ }catch(PDOException $e) 
+  {			 
+	echo "Erro:" . $e->getMessage();
+  } 
+}
 ?>
-
 <!doctype html>
 <html>
 <head>
@@ -63,27 +68,30 @@
         </ul>
        </nav>
 	<main>
-    <section>
-      <fieldset>
-      <legend>Cadastro de Professor:</legend>
-		<form action="#" method="get">
-            <p><label>Matrícula:</label></p>
-            <p><input type="number" name="matricula" size="5" required></p>   
+   <section>
+   <fieldset>
+    <legend>Cadastro de Professor:</legend>
+	<form action="#" method="post" enctype="multipart/form-data">
+     <p><label>Matrícula:</label></p>
+     <p><input type="number" name="matricula" size="5" required></p>   
                              
-            <p><label>Nome do Professor(a):</label></p>
-            <p><input type="text" name="nome" size="50"	required></p>
+     <p><label>Nome do Professor(a):</label></p>
+     <p><input type="text" name="nome" size="50"	required></p>
+     
+     <p><label>Secione um foto:</label></p>
+     <p><input type="file" name="arquivo"></p>
             
-            <p><label>E-mail:</label></p>
-            <p><input type="text" name="email" size="50"	required></p> 
+     <p><label>E-mail:</label></p>
+     <p><input type="text" name="email" size="50"	required></p> 
             
-            <p><label>Telefone:</label></p>
-            <p><input type="tel" name="telefone" size="15"	required></p>
+     <p><label>Telefone:</label></p>
+     <p><input type="tel" name="telefone" size="15"	required></p>
             
-            <p><label>Celular:</label></p>
-            <p><input type="tel" name="celular" size="15"	required></p>
+     <p><label>Celular:</label></p>
+     <p><input type="tel" name="celular" size="15"	required></p>
             
-            <p><label>Data de contribuição:</label></p>
-            <p><input type="date" name="data" 	required></p>
+     <p><label>Data de contribuição:</label></p>
+     <p><input type="date" name="data" 	required></p>
             
             <p><label>Valor da contribuição:</label></p>
             <p><input type="text" name="valor" size="10"	required></p>

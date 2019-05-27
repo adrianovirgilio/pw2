@@ -1,7 +1,7 @@
 ﻿<?php
 	session_start();
 	$login = $_POST['login'];
-	$senha = $_POST['senha'];
+	$senha = md5($_POST['senha']);
 	$con = new PDO('mysql:host=localhost:3307;
 					dbname=banco_apm','root','usbw');
 	$cmd_sql ="SELECT * FROM tabela_usuarios WHERE
@@ -22,6 +22,4 @@
   		unset ($_SESSION['senha']);
   		header('location:index.html');
 	}
-
-
 ?>
