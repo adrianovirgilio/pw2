@@ -1,20 +1,20 @@
 ﻿<?php
-if(isset($_GET['cadastrar'])){
+if(isset($_POST['cadastrar'])){
  try{
 $conexao = new PDO('mysql:host=localhost:3307;
 						dbname=banco_apm','root','usbw');
 $conexao->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-$matricula = $_GET['matricula'];
-$nome = $_GET['nome']; 
-$email = $_GET['email'];
-$telefone = $_GET['telefone'];
-$celular = $_GET['celular'];
-$valor = $_GET['valor'];
-$data = $_GET['data'];
+$matricula = $_POST['matricula'];
+$nome = $_POST['nome']; 
+$email = $_POST['email'];
+$telefone = $_POST['telefone'];
+$celular = $_POST['celular'];
+$valor = $_POST['valor'];
+$data = $_POST['data'];
 // Recebendo dados do arquivo
 $arquivo = $_FILES['arquivo'];
-$nome = $_FILES['arquivo']['name'];
-$extensao = explode(".",$nome);
+$foto = $_FILES['arquivo']['name'];
+$extensao = explode(".",$foto);
 $nome_final = md5(time()) . ".". $extensao[1];
 $pasta = "fotos/";
 $comando_sql = "INSERT INTO tabela_professores(matricula,nome,email,telefone,celular,data,valor,foto)
