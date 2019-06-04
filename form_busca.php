@@ -23,23 +23,29 @@
  	<p><input type="text" name="valor_de_busca" size="50" required> </p>
  	<p><input type="submit" name="buscar" value="Pesquisar"></p>
     </form>
-    <?php
-		if(isset($_GET['buscar'])){
-			$valor = $_GET['valor_de_busca'];
-			try{
-				$con = new PDO('mysql:host=localhost:3307;dbname=banco_apm','root','usbw');			
-				$con->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+<?php
+  if(isset($_GET['buscar'])){
+	$valor = $_GET['valor_de_busca'];
+	try{
+$con = new PDO('mysql:host=localhost:3307;dbname=banco_apm','root','usbw');			
+	$con->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 				$comando_sql = "SELECT * FROM tabela_professores WHERE nome LIKE '%$valor%'";
 				$consulta = $con->query($comando_sql);
 				print "<p>Resultado:</p>";
 				while($registro = $consulta->fetch(PDO::FETCH_ASSOC))
-					{
-						print "<p>
-						    {$registro['matricula']} - {$registro['nome']}
-							<a href='form_busca.php?excluir&matricula={$registro['matricula']}'>
-								<img src='icones/excluir.png' title='Excluir registro'></a>								 
+		{
+	print "<p>
+{$registro['matricula']} - {$registro['nome']} - 
+<img src='fotos/{$registro['foto']}' width='100' height='100'>
+<a href='form_busca.php?excluir&matricula={$registro['matricula']}'>
+<img src='icones/excluir.png' title='Excluir registro'></a>		
+
+<a href='form_editar.php?matricula={$registro['matricula']}'>
+<img src='icones/editar.png' title='Editar Registro'></a>							 
+					 
 						    </p>";
 					}
+			
 											
 				}catch(PDOException $e){
 					print "Erro ocorrido:" . $e->getMessage();					
