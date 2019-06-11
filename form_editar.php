@@ -1,5 +1,6 @@
 ﻿<?php
-	$matricula = $_GET['matricula'];
+if(isset($_GET['matricula'])){
+  $matricula = $_GET['matricula'];
 	$conexao = new PDO('mysql:host=localhost:3307;
 						dbname=banco_apm','root','usbw');
   $sql = "SELECT * FROM tabela_professores WHERE matricula=?";
@@ -7,6 +8,35 @@
   $busca->bindParam(1,$matricula);
   $busca->execute();
   $registro = $busca->fetch(PDO::FETCH_ASSOC);
+}
+
+if(isset($_POST['atualizar'])){
+  $matricula = $_POST['matricula'];
+  $nome = $_POST['nome']; 
+  $email = $_POST['email'];
+  $telefone = $_POST['telefone'];
+  $celular = $_POST['celular'];
+  $valor = $_POST['valor'];
+  $data = $_POST['data'];
+  // Recebendo dados do arquivo
+  $arquivo = $_FILES['arquivo'];
+  $foto = $_FILES['arquivo']['name'];
+  $extensao = explode(".",$foto);
+  $nome_final = md5(time()) . ".". $extensao[1];
+  $pasta = "fotos/";
+  $cmd_atualiza = "UPDATE tabela_professores SET
+                   nome = ?,
+                   email = ?,
+                   telefone = ?,
+                   celular = ?,
+                   data = ?,
+                   valor = ?
+                   foto = ? WHERE matricula = ?";
+                   
+}
+	
+
+
 ?>
 <!doctype html>
 <html>
@@ -44,10 +74,25 @@
                              
      <p><label>Nome do Professor(a):</label></p>
      <p><input type="text" name="nome"  value="<?php echo $registro['nome'];?>" size="50"	required></p>
-     
+
+     <!-- Criando um preview da imagem carregado pelo input file  10/06/2019-->
      <p><label>Secione um foto:</label></p>
-     <p><input type="file" name="arquivo"></p>
-            
+     <p><img src="fotos/<?php echo $registro['foto'];?>" width="20%" height="20%"  id="visualizar_imagem"></p>
+     <p><input type="file" name="arquivo"  id="arquivo"></p>
+
+      <script>
+              function carregaImagem() {
+              if (this.files && this.files[0]) {
+                  var file = new FileReader();
+                  file.onload = function(e) {
+                    document.getElementById("visualizar_imagem").src = e.target.result;
+                    };
+                  file.readAsDataURL(this.files[0]);
+                  }
+                }         
+            document.getElementById("arquivo").addEventListener("change", carregaImagem, false);
+      </script>
+     <!-- Fim do preview da imagem carregado pelo input file  10/06/2019 -->
      <p><label>E-mail:</label></p>
      <p><input type="text" name="email" size="50"	required></p> 
             
